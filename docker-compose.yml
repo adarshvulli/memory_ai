@@ -1,0 +1,26 @@
+version: "3.8"
+services:
+  neo4j:
+    image: neo4j:5-enterprise
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/test
+  chroma:
+    image: ghcr.io/chroma-core/chroma:latest
+    ports:
+      - "8000:8000"
+  backend:
+    build: ./backend
+    ports:
+      - "8001:8001"
+    depends_on:
+      - neo4j
+      - chroma
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend 

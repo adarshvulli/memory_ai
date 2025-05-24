@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+neo4j
+chromadb
+openai
+langchain
+pydantic
+python-dotenv 
