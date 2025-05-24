@@ -5,10 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { X, Edit, Save, Trash, Plus, Settings, Search } from 'lucide-react';
+import { X, Edit, Save, Trash, Plus, Settings, Search, Template, Customize } from 'lucide-react';
 import { UserTrait, MemoryCategory } from '@/types/memory';
 import MemoryConfigModal from './MemoryConfigModal';
 import MemorySearch from './MemorySearch';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 interface MemoryPanelProps {
   userTraits: UserTrait[];
@@ -74,6 +81,28 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
       usageCount: 0
     };
     onAddTrait(newTrait);
+  };
+
+  const addFromTemplate = (templateType: string) => {
+    const templates = {
+      personal: { category: 'Personal', value: 'Add personal information', confidence: 0.5 },
+      work: { category: 'Work', value: 'Add work context', confidence: 0.5 },
+      preferences: { category: 'Preferences', value: 'Add communication preferences', confidence: 0.5 },
+      interests: { category: 'Interests', value: 'Add topics of interest', confidence: 0.5 }
+    };
+
+    const template = templates[templateType as keyof typeof templates];
+    if (template) {
+      const newTrait: Omit<UserTrait, 'id'> = {
+        ...template,
+        type: 'text',
+        lastUpdated: new Date(),
+        priority: 'medium',
+        source: 'manual',
+        usageCount: 0
+      };
+      onAddTrait(newTrait);
+    }
   };
 
   const getCategoryColor = (categoryName: string) => {
@@ -147,14 +176,46 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-purple-600 dark:text-purple-400 flex items-center justify-between">
               Persistent Memory
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={addNewTrait}
-                className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
-              >
-                <Plus className="w-3 h-3" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
+                    >
+                      <Template className="w-3 h-3" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => addFromTemplate('personal')}>
+                      <span className="text-xs">Personal Info</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => addFromTemplate('work')}>
+                      <span className="text-xs">Work Context</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => addFromTemplate('preferences')}>
+                      <span className="text-xs">Communication Style</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => addFromTemplate('interests')}>
+                      <span className="text-xs">Interests & Hobbies</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => setShowConfigModal(true)}>
+                      <Customize className="w-3 h-3 mr-2" />
+                      <span className="text-xs">Customize Categories</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={addNewTrait}
+                  className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
+                >
+                  <Plus className="w-3 h-3" />
+                </Button>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
