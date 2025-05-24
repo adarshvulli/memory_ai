@@ -147,18 +147,18 @@ const Index = () => {
 
   return (
     <div className={`min-h-screen flex ${isDarkMode ? 'dark' : ''}`}>
-      <div className="flex-1 flex flex-col bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800">
+      <div className="flex-1 flex flex-col bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         {/* Header */}
-        <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700 p-4">
+        <header className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700/50 p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+              <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg shadow-md">
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-slate-900 dark:text-white">Memory AI Assistant</h1>
+                <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">Memory AI Assistant</h1>
                 <div className="flex items-center gap-2">
-                  <Badge variant={isMemoryMode ? "default" : "secondary"} className="text-xs">
+                  <Badge variant={isMemoryMode ? "default" : "secondary"} className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800">
                     {isMemoryMode ? "Memory Mode Active" : "Default Mode"}
                   </Badge>
                   <SystemStatus isConnected={isConnected} />
@@ -178,7 +178,7 @@ const Index = () => {
                 variant="outline"
                 size="sm"
                 onClick={() => setShowMemoryPanel(!showMemoryPanel)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 <User className="w-4 h-4" />
                 Profile
@@ -188,6 +188,7 @@ const Index = () => {
                 variant="ghost"
                 size="sm"
                 onClick={toggleDarkMode}
+                className="hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 {isDarkMode ? '☀️' : '🌙'}
               </Button>
@@ -202,13 +203,13 @@ const Index = () => {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 && (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
                     <MessageCircle className="w-8 h-8 text-white" />
                   </div>
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100 mb-2">
                     Welcome to Memory AI Assistant
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                  <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
                     I remember your preferences and adapt to your communication style. 
                     Try introducing yourself to see how I learn about you!
                   </p>
@@ -222,7 +223,7 @@ const Index = () => {
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700">
+            <div className="p-4 bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700/50">
               <div className="flex gap-2 max-w-4xl mx-auto">
                 <div className="flex-1 relative">
                   <textarea
@@ -231,19 +232,19 @@ const Index = () => {
                     onChange={(e) => setInputValue(e.target.value)}
                     onKeyPress={handleKeyPress}
                     placeholder="Type your message... (Enter to send, Shift+Enter for new line)"
-                    className="w-full px-4 py-3 pr-12 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[48px] max-h-32"
+                    className="w-full px-4 py-3 pr-12 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[48px] max-h-32 text-slate-900 dark:text-slate-100 placeholder:text-slate-500 dark:placeholder:text-slate-400"
                     rows={1}
                   />
                   {isMemoryMode && (
                     <div className="absolute right-3 top-3">
-                      <Zap className="w-4 h-4 text-blue-500" />
+                      <Zap className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                     </div>
                   )}
                 </div>
                 <Button
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim()}
-                  className="px-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                  className="px-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
                 </Button>
