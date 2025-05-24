@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Brain, Settings, User, MessageCircle, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +11,7 @@ import MemoryPanel from '@/components/MemoryPanel';
 import ModelSelector from '@/components/ModelSelector';
 import SystemStatus from '@/components/SystemStatus';
 import { useToast } from '@/hooks/use-toast';
+import { UserTrait } from '@/types/memory';
 
 interface Message {
   id: string;
@@ -25,8 +25,12 @@ interface UserTrait {
   id: string;
   category: string;
   value: string;
+  type: 'text' | 'number' | 'date';
   confidence: number;
   lastUpdated: Date;
+  priority: 'high' | 'medium' | 'low';
+  source: 'conversation' | 'manual';
+  usageCount: number;
 }
 
 const Index = () => {
@@ -38,9 +42,39 @@ const Index = () => {
   const [selectedModel, setSelectedModel] = useState('gpt-4');
   const [isConnected, setIsConnected] = useState(true);
   const [userTraits, setUserTraits] = useState<UserTrait[]>([
-    { id: '1', category: 'Name', value: 'Rachit', confidence: 0.95, lastUpdated: new Date() },
-    { id: '2', category: 'Response Style', value: 'Concise answers', confidence: 0.88, lastUpdated: new Date() },
-    { id: '3', category: 'Interests', value: 'AI, Technology, Productivity', confidence: 0.82, lastUpdated: new Date() }
+    { 
+      id: '1', 
+      category: 'Name', 
+      value: 'Rachit', 
+      type: 'text',
+      confidence: 0.95, 
+      lastUpdated: new Date(),
+      priority: 'high',
+      source: 'conversation',
+      usageCount: 5
+    },
+    { 
+      id: '2', 
+      category: 'Response Style', 
+      value: 'Concise answers', 
+      type: 'text',
+      confidence: 0.88, 
+      lastUpdated: new Date(),
+      priority: 'medium',
+      source: 'conversation',
+      usageCount: 3
+    },
+    { 
+      id: '3', 
+      category: 'Interests', 
+      value: 'AI, Technology, Productivity', 
+      type: 'text',
+      confidence: 0.82, 
+      lastUpdated: new Date(),
+      priority: 'medium',
+      source: 'manual',
+      usageCount: 2
+    }
   ]);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -96,6 +130,31 @@ const Index = () => {
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
+  };
+
+  const handleUpdateTrait = (id: string, value: string) => {
+    setUserTraits(prev => prev.map(trait => 
+      trait.id === id 
+        ? { 
+            ...trait, 
+            value, 
+            lastUpdated: new Date(),
+            usageCount: trait.usageCount + 1
+          } 
+        : trait
+    ));
+  };
+
+  const handleDeleteTrait = (id: string) => {
+    setUserTraits(prev => prev.filter(trait => trait.id !== id));
+  };
+
+  const handleAddTrait = (newTrait: Omit<UserTrait, 'id'>) => {
+    const trait: UserTrait = {
+      ...newTrait,
+      id: Date.now().toString()
+    };
+    setUserTraits(prev => [...prev, trait]);
   };
 
   return (
@@ -208,11 +267,9 @@ const Index = () => {
           {showMemoryPanel && (
             <MemoryPanel
               userTraits={userTraits}
-              onUpdateTrait={(id, value) => {
-                setUserTraits(prev => prev.map(trait => 
-                  trait.id === id ? { ...trait, value, lastUpdated: new Date() } : trait
-                ));
-              }}
+              onUpdateTrait={handleUpdateTrait}
+              onDeleteTrait={handleDeleteTrait}
+              onAddTrait={handleAddTrait}
               onClose={() => setShowMemoryPanel(false)}
             />
           )}

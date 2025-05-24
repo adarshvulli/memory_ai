@@ -5,29 +5,44 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { X, Edit, Save, Trash, Plus } from 'lucide-react';
-
-interface UserTrait {
-  id: string;
-  category: string;
-  value: string;
-  confidence: number;
-  lastUpdated: Date;
-}
+import { X, Edit, Save, Trash, Plus, Settings, Search } from 'lucide-react';
+import { UserTrait, MemoryCategory } from '@/types/memory';
+import MemoryConfigModal from './MemoryConfigModal';
+import MemorySearch from './MemorySearch';
 
 interface MemoryPanelProps {
   userTraits: UserTrait[];
   onUpdateTrait: (id: string, value: string) => void;
+  onDeleteTrait: (id: string) => void;
+  onAddTrait: (trait: Omit<UserTrait, 'id'>) => void;
   onClose: () => void;
 }
 
-const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, onClose }) => {
+const MemoryPanel: React.FC<MemoryPanelProps> = ({ 
+  userTraits, 
+  onUpdateTrait, 
+  onDeleteTrait,
+  onAddTrait,
+  onClose 
+}) => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [filteredTraits, setFilteredTraits] = useState<UserTrait[]>(userTraits);
+  const [categories, setCategories] = useState<MemoryCategory[]>([
+    { id: 'name', name: 'Name', description: 'User\'s name', color: 'blue', icon: 'User', isCustom: false, fieldType: 'text', isRequired: true },
+    { id: 'response_style', name: 'Response Style', description: 'Preferred response length and tone', color: 'orange', icon: 'Settings', isCustom: false, fieldType: 'text', isRequired: false },
+    { id: 'interests', name: 'Interests', description: 'Topics of interest', color: 'red', icon: 'Heart', isCustom: false, fieldType: 'text', isRequired: false }
+  ]);
+
+  React.useEffect(() => {
+    setFilteredTraits(userTraits);
+  }, [userTraits]);
 
   const startEditing = (trait: UserTrait) => {
     setEditingId(trait.id);
-    setEditValue(trait.value);
+    setEditValue(trait.value.toString());
   };
 
   const saveEdit = () => {
@@ -43,16 +58,64 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
     setEditValue('');
   };
 
+  const deleteTrait = (traitId: string) => {
+    onDeleteTrait(traitId);
+  };
+
+  const addNewTrait = () => {
+    const newTrait: Omit<UserTrait, 'id'> = {
+      category: 'Custom',
+      value: 'New trait',
+      type: 'text',
+      confidence: 0.5,
+      lastUpdated: new Date(),
+      priority: 'medium',
+      source: 'manual',
+      usageCount: 0
+    };
+    onAddTrait(newTrait);
+  };
+
+  const getCategoryColor = (categoryName: string) => {
+    const category = categories.find(cat => cat.name === categoryName);
+    return category?.color || 'gray';
+  };
+
+  const traitsToDisplay = showSearch ? filteredTraits : userTraits;
+
   return (
     <div className="w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700 flex flex-col">
       <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Memory Profile</h2>
-        <Button variant="ghost" size="sm" onClick={onClose}>
-          <X className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setShowSearch(!showSearch)}
+            className={showSearch ? 'bg-slate-100 dark:bg-slate-800' : ''}
+          >
+            <Search className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={() => setShowConfigModal(true)}>
+            <Settings className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onClose}>
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
+        {showSearch && (
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+            <MemorySearch
+              traits={userTraits}
+              categories={categories}
+              onFilteredResults={setFilteredTraits}
+            />
+          </div>
+        )}
+
         {/* Session Memory */}
         <Card className="m-4 border-blue-200 dark:border-blue-800">
           <CardHeader className="pb-3">
@@ -73,18 +136,29 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
           <CardHeader className="pb-3">
             <CardTitle className="text-sm text-purple-600 dark:text-purple-400 flex items-center justify-between">
               Persistent Memory
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={addNewTrait}>
                 <Plus className="w-3 h-3" />
               </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {userTraits.map((trait) => (
+            {traitsToDisplay.map((trait) => (
               <div key={trait.id} className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    {trait.category}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs bg-${getCategoryColor(trait.category)}-100 border-${getCategoryColor(trait.category)}-300`}
+                    >
+                      {trait.category}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {trait.priority}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {trait.source}
+                    </Badge>
+                  </div>
                   <div className="flex items-center gap-1">
                     {editingId === trait.id ? (
                       <>
@@ -96,9 +170,14 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
                         </Button>
                       </>
                     ) : (
-                      <Button variant="ghost" size="sm" onClick={() => startEditing(trait)}>
-                        <Edit className="w-3 h-3" />
-                      </Button>
+                      <>
+                        <Button variant="ghost" size="sm" onClick={() => startEditing(trait)}>
+                          <Edit className="w-3 h-3" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => deleteTrait(trait.id)}>
+                          <Trash className="w-3 h-3" />
+                        </Button>
+                      </>
                     )}
                   </div>
                 </div>
@@ -111,7 +190,9 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
                     onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
                   />
                 ) : (
-                  <p className="text-xs text-slate-600 dark:text-slate-400">{trait.value}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                    {Array.isArray(trait.value) ? trait.value.join(', ') : trait.value.toString()}
+                  </p>
                 )}
                 
                 <div className="space-y-1">
@@ -124,8 +205,9 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
                   <Progress value={trait.confidence * 100} className="h-1" />
                 </div>
                 
-                <div className="text-xs text-slate-400">
-                  Updated {trait.lastUpdated.toLocaleDateString()}
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>Updated {trait.lastUpdated.toLocaleDateString()}</span>
+                  <span>Used {trait.usageCount} times</span>
                 </div>
               </div>
             ))}
@@ -149,12 +231,29 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({ userTraits, onUpdateTrait, on
               </span>
             </div>
             <div className="flex justify-between text-xs">
+              <span className="text-slate-600 dark:text-slate-400">Categories</span>
+              <span className="font-medium">{categories.length}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-600 dark:text-slate-400">Manual Entries</span>
+              <span className="font-medium">
+                {userTraits.filter(t => t.source === 'manual').length}
+              </span>
+            </div>
+            <div className="flex justify-between text-xs">
               <span className="text-slate-600 dark:text-slate-400">Last Update</span>
               <span className="font-medium">Today</span>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <MemoryConfigModal
+        isOpen={showConfigModal}
+        onClose={() => setShowConfigModal(false)}
+        categories={categories}
+        onUpdateCategories={setCategories}
+      />
     </div>
   );
 };
