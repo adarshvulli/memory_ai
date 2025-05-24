@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { X, Edit, Save, Trash, Plus, Settings, Search, FileTemplate, Palette } from 'lucide-react';
+import { X, Edit, Save, Trash, Plus, Settings, Search, FileText, Palette } from 'lucide-react';
 import { UserTrait, MemoryCategory } from '@/types/memory';
 import MemoryConfigModal from './MemoryConfigModal';
 import MemorySearch from './MemorySearch';
@@ -183,7 +184,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                       size="sm"
                       className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
                     >
-                      <FileTemplate className="w-3 h-3" />
+                      <FileText className="w-3 h-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
