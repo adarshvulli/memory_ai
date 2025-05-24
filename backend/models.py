@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import Literal, Optional
+
+FieldType = Literal["interest", "skill", "topic", "personality_trait"]
 
 class KGInitRequest(BaseModel):
     user_name: str
@@ -12,3 +14,19 @@ class MessagePair(BaseModel):
     user_name: str
     assistant_msg: str
     user_msg: str
+
+class AddKGItem(BaseModel):
+    user_name: str
+    field: FieldType
+    value: str
+
+class UpdateKGItem(BaseModel):
+    user_name: str
+    field: FieldType
+    old_value: str
+    new_value: str
+
+class DeleteKGItem(BaseModel):
+    user_name: str
+    field: FieldType
+    value: str

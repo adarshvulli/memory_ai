@@ -11,6 +11,7 @@ def initialize_user_kg(request: KGInitRequest):
     create_user_if_not_exists(request.user_name)
     return {"message": f"Knowledge graph initialized for {request.user_name}"}
 
+
 @router.post("/query")
 def get_knowledge_context(query: QueryInput):
     context = query_user_knowledge(query.user_name, query.user_query)
