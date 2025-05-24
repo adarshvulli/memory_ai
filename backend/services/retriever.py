@@ -4,7 +4,7 @@ from services.extractor_metadata import extract_metadata_from_query
 def query_user_knowledge(user_name: str, user_query: str):
 
     metadata = extract_metadata_from_query(user_query)
-
+    print(f"Extracted metadata: {metadata}")
     topic = metadata.get("topic", "unknown")
     use_kg = metadata.get("use_KG", False)
 

@@ -30,3 +30,8 @@ class DeleteKGItem(BaseModel):
     user_name: str
     field: FieldType
     value: str
+
+class ChatInput(BaseModel):
+    session_id: str
+    user_name: str
+    user_input: str

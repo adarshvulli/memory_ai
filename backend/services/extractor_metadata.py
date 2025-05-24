@@ -43,9 +43,9 @@ def extract_metadata_from_query(query, model="gpt-3.5-turbo", max_retries=3, del
                 messages=[
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.2,
             )
             result = response.choices[0].message.content.strip()
+            print("Debugging:",result)
             parsed = json.loads(result)
             return parsed
 
