@@ -3,7 +3,7 @@ import { UserProfile, KnowledgeItem, ChatResponse, Message } from '../types/chat
 import { mockApiService } from './mockApi';
 
 // Configuration flag to switch between mock and real API
-const USE_MOCK_API = true; // Set to false when backend is available
+const USE_MOCK_API = false; // Set to false when backend is available
 
 const API_BASE_URL = 'http://localhost:8000';
 
@@ -39,6 +39,28 @@ class ApiService {
     if (!response.ok) throw new Error('Failed to send message');
     return response.json();
   }
+
+    async updateKnowledgeFromMessagePair(userName: string, userMsg: string, assistantMsg: string): Promise<void> {
+    if (USE_MOCK_API) {
+      return; // no-op in mock
+    }
+
+    const response = await fetch(`${API_BASE_URL}/kg/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_name: userName,
+        user_msg: userMsg,
+        assistant_msg: assistantMsg
+      })
+    });
+
+    if (!response.ok) {
+      console.warn('Failed to update KG from message pair');
+      throw new Error('KG update from chat failed');
+    }
+  }
+
 
   async getUserProfile(userName: string): Promise<UserProfile> {
     if (USE_MOCK_API) {

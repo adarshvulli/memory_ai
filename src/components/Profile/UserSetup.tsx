@@ -35,11 +35,12 @@ const UserSetup: React.FC = () => {
       <div className="max-w-md w-full">
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <User className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              {/* <User className="w-8 h-8 text-white" /> */}
+              <img src="/logo.png" alt="Logo" className="w-16 h-16" /> 
             </div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              Welcome to AI Knowledge Assistant
+              Welcome to Memory AI!
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               Let's get started by setting up your profile. I'll learn about you as we chat!

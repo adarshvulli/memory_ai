@@ -9,7 +9,7 @@ const KnowledgeManager: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newItem, setNewItem] = useState({ field: 'interest', value: '' });
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('interest');
   const [editingItem, setEditingItem] = useState<{ field: string; oldValue: string; newValue: string } | null>(null);
 
   if (!user) return null;
@@ -141,7 +141,6 @@ const KnowledgeManager: React.FC = () => {
           onChange={(e) => setFilterCategory(e.target.value)}
           className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3"
         >
-          <option value="all">All Categories</option>
           <option value="interest">Interests</option>
           <option value="skill">Skills</option>
           <option value="topic">Topics</option>

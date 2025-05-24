@@ -27,7 +27,6 @@ const ChatInterface: React.FC = () => {
       text: inputValue.trim(),
       sender: 'user',
       timestamp: new Date(),
-      status: 'sending'
     };
 
     addMessage(userMessage);
@@ -41,6 +40,7 @@ const ChatInterface: React.FC = () => {
         user.user_name,
         userMessage.text
       );
+      console.log('AI response:', response);
 
       if (!sessionId) {
         setSessionId(response.session_id);
@@ -54,6 +54,14 @@ const ChatInterface: React.FC = () => {
       };
 
       addMessage(aiMessage);
+
+          apiService.updateKnowledgeFromMessagePair(
+      user.user_name,
+      userMessage.text,
+      response.response
+    ).catch(err => {
+      console.warn("KG update failed (non-blocking):", err);
+    });
       
       // Refresh user profile to get updated knowledge
       try {

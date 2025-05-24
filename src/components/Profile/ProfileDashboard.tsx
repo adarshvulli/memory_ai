@@ -64,7 +64,7 @@ const ProfileDashboard: React.FC = () => {
             </div>
             <div>
               <h2 className="text-xl font-bold">{user.user_name}</h2>
-              <p className="text-blue-100">AI Assistant User</p>
+              <p className="text-blue-100">Memory AI User</p>
             </div>
           </div>
           
