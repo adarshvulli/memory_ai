@@ -85,6 +85,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
 
   return (
     <div className="w-80 bg-white dark:bg-slate-900 border-l border-slate-200 dark:border-slate-700 flex flex-col">
+      {/* Header */}
       <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Memory Profile</h2>
         <div className="flex items-center gap-1">
@@ -156,32 +157,33 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
               </Button>
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3">
             {traitsToDisplay.map((trait) => (
-              <div key={trait.id} className="space-y-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+              <div key={trait.id} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600/50">
+                {/* Header with category and actions */}
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex flex-wrap items-center gap-2 flex-1">
                     <Badge 
                       variant="outline" 
                       className={`text-xs bg-${getCategoryColor(trait.category)}-100 dark:bg-${getCategoryColor(trait.category)}-900/30 border-${getCategoryColor(trait.category)}-300 dark:border-${getCategoryColor(trait.category)}-600 text-${getCategoryColor(trait.category)}-700 dark:text-${getCategoryColor(trait.category)}-300`}
                     >
                       {trait.category}
                     </Badge>
-                    <Badge variant="secondary" className="text-xs bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                    <Badge variant="secondary" className="text-xs bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200">
                       {trait.priority}
                     </Badge>
-                    <Badge variant="outline" className="text-xs border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-400">
+                    <Badge variant="outline" className="text-xs border-slate-300 dark:border-slate-500 text-slate-600 dark:text-slate-300">
                       {trait.source}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 ml-2">
                     {editingId === trait.id ? (
                       <>
                         <Button 
                           variant="ghost" 
                           size="sm" 
                           onClick={saveEdit}
-                          className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300"
+                          className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300 h-8 w-8 p-0"
                         >
                           <Save className="w-3 h-3" />
                         </Button>
@@ -189,7 +191,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                           variant="ghost" 
                           size="sm" 
                           onClick={cancelEdit}
-                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 h-8 w-8 p-0"
                         >
                           <X className="w-3 h-3" />
                         </Button>
@@ -200,7 +202,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                           variant="ghost" 
                           size="sm" 
                           onClick={() => startEditing(trait)}
-                          className="text-slate-600 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                          className="text-slate-600 dark:text-slate-300 hover:text-slate-700 dark:hover:text-slate-200 h-8 w-8 p-0"
                         >
                           <Edit className="w-3 h-3" />
                         </Button>
@@ -208,7 +210,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                           variant="ghost" 
                           size="sm" 
                           onClick={() => deleteTrait(trait.id)}
-                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
+                          className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 h-8 w-8 p-0"
                         >
                           <Trash className="w-3 h-3" />
                         </Button>
@@ -217,30 +219,35 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                   </div>
                 </div>
                 
-                {editingId === trait.id ? (
-                  <Input
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    className="text-xs bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-slate-100"
-                    onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
-                  />
-                ) : (
-                  <p className="text-xs text-slate-700 dark:text-slate-200 font-medium">
-                    {Array.isArray(trait.value) ? trait.value.join(', ') : trait.value.toString()}
-                  </p>
-                )}
+                {/* Content */}
+                <div className="mb-3">
+                  {editingId === trait.id ? (
+                    <Input
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                      className="text-sm bg-white dark:bg-slate-600 border-slate-300 dark:border-slate-500 text-slate-900 dark:text-slate-100"
+                      onKeyPress={(e) => e.key === 'Enter' && saveEdit()}
+                    />
+                  ) : (
+                    <p className="text-sm text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
+                      {Array.isArray(trait.value) ? trait.value.join(', ') : trait.value.toString()}
+                    </p>
+                  )}
+                </div>
                 
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500 dark:text-slate-400">Confidence</span>
-                    <span className="text-slate-700 dark:text-slate-200 font-medium">
+                {/* Confidence section */}
+                <div className="space-y-2 mb-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Confidence</span>
+                    <span className="text-xs text-slate-700 dark:text-slate-200 font-semibold">
                       {Math.round(trait.confidence * 100)}%
                     </span>
                   </div>
-                  <Progress value={trait.confidence * 100} className="h-1" />
+                  <Progress value={trait.confidence * 100} className="h-2" />
                 </div>
                 
-                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                {/* Footer info */}
+                <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-600">
                   <span>Updated {trait.lastUpdated.toLocaleDateString()}</span>
                   <span>Used {trait.usageCount} times</span>
                 </div>
@@ -255,29 +262,33 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
             <CardTitle className="text-sm text-green-700 dark:text-green-300">Memory Stats</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300">Total Traits</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">{userTraits.length}</span>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center">
+                <div className="text-lg font-bold text-slate-900 dark:text-slate-100">{userTraits.length}</div>
+                <div className="text-xs text-slate-600 dark:text-slate-300">Total Traits</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  {userTraits.filter(t => t.confidence > 0.8).length}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-300">High Confidence</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-slate-900 dark:text-slate-100">{categories.length}</div>
+                <div className="text-xs text-slate-600 dark:text-slate-300">Categories</div>
+              </div>
+              <div className="text-center">
+                <div className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  {userTraits.filter(t => t.source === 'manual').length}
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-300">Manual</div>
+              </div>
             </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300">High Confidence</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">
-                {userTraits.filter(t => t.confidence > 0.8).length}
-              </span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300">Categories</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">{categories.length}</span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300">Manual Entries</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">
-                {userTraits.filter(t => t.source === 'manual').length}
-              </span>
-            </div>
-            <div className="flex justify-between text-xs">
-              <span className="text-slate-600 dark:text-slate-300">Last Update</span>
-              <span className="font-medium text-slate-900 dark:text-slate-100">Today</span>
+            <div className="pt-2 border-t border-green-200 dark:border-green-700">
+              <div className="flex justify-between text-xs">
+                <span className="text-slate-600 dark:text-slate-300">Last Update</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100">Today</span>
+              </div>
             </div>
           </CardContent>
         </Card>
