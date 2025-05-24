@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { X, Edit, Save, Trash, Plus, Settings, Search, Template, Customize } from 'lucide-react';
+import { X, Edit, Save, Trash, Plus, Settings, Search, FileTemplate, Palette } from 'lucide-react';
 import { UserTrait, MemoryCategory } from '@/types/memory';
 import MemoryConfigModal from './MemoryConfigModal';
 import MemorySearch from './MemorySearch';
@@ -184,7 +183,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                       size="sm"
                       className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
                     >
-                      <Template className="w-3 h-3" />
+                      <FileTemplate className="w-3 h-3" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48">
@@ -202,7 +201,7 @@ const MemoryPanel: React.FC<MemoryPanelProps> = ({
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => setShowConfigModal(true)}>
-                      <Customize className="w-3 h-3 mr-2" />
+                      <Palette className="w-3 h-3 mr-2" />
                       <span className="text-xs">Customize Categories</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
