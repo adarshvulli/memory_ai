@@ -21,18 +21,6 @@ interface Message {
   memoryUsed?: string[];
 }
 
-interface UserTrait {
-  id: string;
-  category: string;
-  value: string;
-  type: 'text' | 'number' | 'date';
-  confidence: number;
-  lastUpdated: Date;
-  priority: 'high' | 'medium' | 'low';
-  source: 'conversation' | 'manual';
-  usageCount: number;
-}
-
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
